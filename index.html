@@ -527,6 +527,9 @@
   console.error('ステージデータ取得エラー:', error);
   stages = ['ユノハナ大渓谷', 'ゴンズイ地区', 'ヤガラ市場', 'マテガイ放水路', 'ナメロウ金属'];
   }
+      document.querySelectorAll('.weapon-input').forEach(input => {
+  setupWeaponAutocomplete(input);
+});
   }
   
   // オートコンプリート
@@ -765,10 +768,6 @@ document.addEventListener('click', (e) => {
       box.classList.remove('show');
     });
   }
-});
-
-  document.querySelectorAll('.weapon-input').forEach(input => {
-  setupWeaponAutocomplete(input);
 });
   
   // 削除機能
