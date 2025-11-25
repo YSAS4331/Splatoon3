@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Splatoon3 戦績記録</title>
+  <style>
+  :root {
+  --bg: #0f1724;
+  --card: #0b1220;
+  --muted: #9aa4b2;
+  --accent: #7dd3fc;
+  --chip-bg: rgba(255,255,255,0.03);
+  --chip-border: rgba(255,255,255,0.06);
+  --text: #e6eef6;
+  --muted-2: #bfc9d2;
+  }
+  
+  * {
+  box-sizing: border-box;
+  }
+  
+  body {
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+  margin: 0;
+  background: linear-gradient(180deg, #071022 0%, #071727 100%);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 28px;
+  }
+  
+  h1 {
+  margin: 0 0 10px;
+  font-size: 20px;
+  }
+  
+  h2 {
+  font-size: 18px;
+  margin: 0 0 16px;
+  color: var(--text);
+  }
+  
+  h3 {
+  font-size: 15px;
+  margin: 20px 0 12px;
+  color: var(--muted-2);
+  }
+  
+  .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  }
+  
+  .header {
+  text-align: center;
+  margin-bottom: 24px;
+  }
+  
+  .header h1 {
+  font-size: 28px;
+  margin-bottom: 6px;
+  }
+  
+  .header p {
+  color: var(--muted);
+  font-size: 14px;
+  }
+  
+  .tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  }
+  
+  .tab {
+  padding: 10px 20px;
+  border-radius: 20px;
+  background: var(--chip-bg);
+  font-size: 14px;
+  cursor: pointer;
+  border: 1px solid var(--chip-border);
+  color: var(--text);
+  transition: all 0.15s;
+  }
+  
+  .tab:hover {
+  transform: translateY(-2px);
+  }
+  
+  .tab.active {
+  background: linear-gradient(90deg, #0b5a6a, #064b56);
+  color: #dff8ff;
+  border-color: rgba(125, 211, 252, 0.18);
+  }
+  
+  .card {
+  background: var(--chip-bg);
+  border-radius: 12px;
+  padding: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  box-shadow: 0 6px 20px rgba(2, 6, 23, 0.6);
+  }
+  
+  .tab-content {
+  display: none;
+  }
+  
+  .tab-content.active {
+  display: block;
+  }
+  
+  .form-group {
+  margin-bottom: 16px;
+  }
+  
+  label {
+  display: block;
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 6px;
+  }
+  
+  input[type="text"],
+  input[type="number"],
+  select {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 10px 12px;
+  border-radius: 8px;
+  color: var(--text);
+  outline: none;
+  width: 100%;
+  font-size: 14px;
+  }
+  
+  input:focus,
+  select:focus {
+  border-color: var(--accent);
+  }
+  
+  .autocomplete-container {
+  position: relative;
+  }
+  
+  .autocomplete-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--card);
+  border: 1px solid var(--accent);
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1000;
+  display: none;
+  }
+  
+  .autocomplete-list.show {
+  display: block;
+  }
+  
+  .autocomplete-item {
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: background 0.15s;
+  font-size: 14px;
+  }
+  
+  .autocomplete-item:hover {
+  background: var(--chip-bg);
+  }
+  
+  .row {
+  display: flex;
+  gap: 12px;
+  }
+  
+  .row .form-group {
+  flex: 1;
+  }
+  
+  .weapon-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+  }
+  
+  button {
+  background: var(--accent);
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  color: #042027;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.15s;
+  }
+  
+  button:hover {
+  transform: translateY(-2px);
+  }
+  
+  .btn-full {
+  width: 100%;
+  margin-top: 20px;
+  }
+  
+  .stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-top: 20px;
+  }
+  
+  .stat-card {
+  background: linear-gradient(180deg, rgba(125, 211, 252, 0.08), rgba(125, 211, 252, 0.03));
+  padding: 18px;
+  border-radius: 10px;
+  text-align: center;
+  border: 1px solid rgba(125, 211, 252, 0.1);
+  }
+  
+  .stat-card h3 {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 0 0 8px 0;
+  }
+  
+  .stat-card .value {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--accent);
+  }
+  
+  .records-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+  }
+  
+  .records-table th,
+  .records-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 14px;
+  }
+  
+  .records-table th {
+  background: var(--chip-bg);
+  font-weight: 600;
+  color: var(--muted-2);
+  }
+  
+  .records-table tr:hover {
+  background: var(--chip-bg);
+  }
+  
+  .win {
+  color: #22c55e;
+  font-weight: 600;
+  }
+  
+  .lose {
+  color: #ef4444;
+  font-weight: 600;
+  }
+  
+  .btn-delete {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  }
+  
+  .btn-delete:hover {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: #ef4444;
+  color: #ef4444;
+  }
+  
+  .weapon-selector {
+  margin-bottom: 20px;
+  }
+  
+  .muted {
+  color: var(--muted);
+  }
+  
+  .scroll-container {
+  max-height: 60vh;
+  overflow-y: auto;
+  padding-right: 6px;
+  }
+  
+  @media (max-width: 768px) {
+  body {
+  padding: 16px;
+  }
+  
+  .header h1 {
+  font-size: 22px;
+  }
+  
+  .weapon-grid {
+  grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .stats-grid {
+  grid-template-columns: 1fr;
+  }
+  
+  .records-table {
+  font-size: 12px;
+  }
+  
+  .records-table th,
+  .records-table td {
+  padding: 8px;
+  }
+  }
+  </style>
+  </head>
+  <body>
+  <div class="container">
+  <div class="header">
+  <h1>🦑 Splatoon3 戦績記録</h1>
+  <p class="muted">バトルの記録を残して統計を確認しよう！</p>
+  </div>
+  
+  <div class="tabs">
+  <button class="tab active" onclick="switchTab('record', event)">📝 記録</button>
+  <button class="tab" onclick="switchTab('stats', event)">📊 統計</button>
+  <button class="tab" onclick="switchTab('history', event)">📜 履歴</button>
+  </div>
+  
+  <!-- 記録タブ -->
+  <div id="record" class="tab-content active">
+  <div class="card">
+  <h2>バトル記録</h2>
+  <form id="battleForm">
+      <div class="form-group">
+          <label>勝敗</label>
+          <select id="result" required>
+              <option value="">選択してください</option>
+              <option value="win">勝ち</option>
+              <option value="lose">負け</option>
+          </select>
+      </div>
+  
+      <div class="row">
+          <div class="form-group">
+              <label>ステージ</label>
+              <div class="autocomplete-container">
+                  <input type="text" id="stage" required autocomplete="off">
+                  <div id="stageList" class="autocomplete-list"></div>
+              </div>
+          </div>
+  
+          <div class="form-group">
+              <label>ルール</label>
+              <select id="rule" required>
+                  <option value="">選択してください</option>
+                  <option value="ナワバリバトル">ナワバリバトル</option>
+                  <option value="ガチエリア">ガチエリア</option>
+                  <option value="ガチヤグラ">ガチヤグラ</option>
+                  <option value="ガチホコバトル">ガチホコバトル</option>
+                  <option value="ガチアサリ">ガチアサリ</option>
+              </select>
+          </div>
+      </div>
+  
+      <div class="form-group">
+          <label>自分の武器</label>
+          <input type="text" id="weapon" required>
+      </div>
+  
+      <div class="row">
+          <div class="form-group">
+              <label>キル数</label>
+              <input type="number" id="kills" min="0" required>
+          </div>
+  
+          <div class="form-group">
+              <label>デス数</label>
+              <input type="number" id="deaths" min="0" required>
+          </div>
+  
+          <div class="form-group">
+              <label>塗りポイント</label>
+              <input type="number" id="paint" min="0" required>
+          </div>
+      </div>
+  
+      <h3>全プレイヤーの武器</h3>
+      <div class="weapon-grid">
+          <div class="form-group">
+              <label>味方1</label>
+              <input type="text" id="ally1">
+          </div>
+          <div class="form-group">
+              <label>味方2</label>
+              <input type="text" id="ally2">
+          </div>
+          <div class="form-group">
+              <label>味方3</label>
+              <input type="text" id="ally3">
+          </div>
+          <div class="form-group">
+              <label>敵1</label>
+              <input type="text" id="enemy1">
+          </div>
+          <div class="form-group">
+              <label>敵2</label>
+              <input type="text" id="enemy2">
+          </div>
+          <div class="form-group">
+              <label>敵3</label>
+              <input type="text" id="enemy3">
+          </div>
+          <div class="form-group">
+              <label>敵4</label>
+              <input type="text" id="enemy4">
+          </div>
+      </div>
+  
+      <button type="submit" class="btn-full">記録を保存</button>
+  </form>
+  </div>
+  </div>
+  
+  <!-- 統計タブ -->
+  <div id="stats" class="tab-content">
+  <div class="card">
+  <h2>統計情報</h2>
+  
+  <div class="weapon-selector">
+      <label>武器を選択</label>
+      <select id="weaponFilter" onchange="updateStats()">
+          <option value="all">全体</option>
+      </select>
+  </div>
+  
+  <div class="stats-grid" id="statsGrid"></div>
+  </div>
+  </div>
+  
+  <!-- 履歴タブ -->
+  <div id="history" class="tab-content">
+  <div class="card">
+  <h2>バトル履歴</h2>
+  <div class="scroll-container">
+      <table class="records-table">
+          <thead>
+              <tr>
+                  <th>日時</th>
+                  <th>勝敗</th>
+                  <th>ステージ</th>
+                  <th>ルール</th>
+                  <th>武器</th>
+                  <th>K/D</th>
+                  <th>塗りP</th>
+                  <th>操作</th>
+              </tr>
+          </thead>
+          <tbody id="historyBody"></tbody>
+      </table>
+  </div>
+  </div>
+  </div>
+  </div>
+  
+  <script>
+  let db;
+  let stages = [];
+  
+  // IndexedDB初期化
+  function initDB() {
+  const request = indexedDB.open('Splatoon3DB', 1);
+  
+  request.onerror = () => {
+  console.error('データベースエラー');
+  };
+  
+  request.onsuccess = (e) => {
+  db = e.target.result;
+  loadHistory();
+  updateWeaponFilter();
+  updateStats();
+  };
+  
+  request.onupgradeneeded = (e) => {
+  db = e.target.result;
+  if (!db.objectStoreNames.contains('battles')) {
+      const objectStore = db.createObjectStore('battles', { keyPath: 'id', autoIncrement: true });
+      objectStore.createIndex('timestamp', 'timestamp', { unique: false });
+      objectStore.createIndex('weapon', 'weapon', { unique: false });
+  }
+  };
+  }
+  
+  // ステージデータ取得
+  async function loadStages() {
+  try {
+  const response = await fetch('./datas.json');
+  const data = await response.json();
+  stages = data.stages || [];
+  } catch (error) {
+  console.error('ステージデータ取得エラー:', error);
+  stages = ['ユノハナ大渓谷', 'ゴンズイ地区', 'ヤガラ市場', 'マテガイ放水路', 'ナメロウ金属'];
+  }
+  }
+  
+  // オートコンプリート
+  const stageInput = document.getElementById('stage');
+  const stageList = document.getElementById('stageList');
+  
+  stageInput.addEventListener('input', (e) => {
+  const value = e.target.value.toLowerCase();
+  if (!value) {
+  stageList.classList.remove('show');
+  return;
+  }
+  
+  const filtered = stages.filter(stage => 
+  stage.toLowerCase().includes(value)
+  );
+  
+  if (filtered.length > 0) {
+  stageList.innerHTML = filtered.map(stage => 
+      `<div class="autocomplete-item" onclick="selectStage('${stage}')">${stage}</div>`
+  ).join('');
+  stageList.classList.add('show');
+  } else {
+  stageList.classList.remove('show');
+  }
+  });
+  
+  function selectStage(stage) {
+  stageInput.value = stage;
+  stageList.classList.remove('show');
+  }
+  
+  document.addEventListener('click', (e) => {
+  if (!e.target.closest('.autocomplete-container')) {
+  stageList.classList.remove('show');
+  }
+  });
+  
+  // タブ切り替え
+  function switchTab(tabName, event) {
+  document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+  
+  event.target.classList.add('active');
+  document.getElementById(tabName).classList.add('active');
+  
+  if (tabName === 'history') {
+  loadHistory();
+  } else if (tabName === 'stats') {
+  updateWeaponFilter();
+  updateStats();
+  }
+  }
+  
+  // フォーム送信
+  document.getElementById('battleForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  
+  const battle = {
+  timestamp: new Date().toISOString(),
+  result: document.getElementById('result').value,
+  stage: document.getElementById('stage').value,
+  rule: document.getElementById('rule').value,
+  weapon: document.getElementById('weapon').value,
+  kills: parseInt(document.getElementById('kills').value),
+  deaths: parseInt(document.getElementById('deaths').value),
+  paint: parseInt(document.getElementById('paint').value),
+  allWeapons: {
+      ally1: document.getElementById('ally1').value,
+      ally2: document.getElementById('ally2').value,
+      ally3: document.getElementById('ally3').value,
+      enemy1: document.getElementById('enemy1').value,
+      enemy2: document.getElementById('enemy2').value,
+      enemy3: document.getElementById('enemy3').value,
+      enemy4: document.getElementById('enemy4').value
+  }
+  };
+  
+  const transaction = db.transaction(['battles'], 'readwrite');
+  const objectStore = transaction.objectStore('battles');
+  objectStore.add(battle);
+  
+  transaction.oncomplete = () => {
+  alert('記録を保存しました！');
+  e.target.reset();
+  loadHistory();
+  updateWeaponFilter();
+  };
+  });
+  
+  // 履歴読み込み
+  function loadHistory() {
+  const transaction = db.transaction(['battles'], 'readonly');
+  const objectStore = transaction.objectStore('battles');
+  const request = objectStore.getAll();
+  
+  request.onsuccess = () => {
+  const battles = request.result.reverse();
+  const tbody = document.getElementById('historyBody');
+  
+  tbody.innerHTML = battles.map(battle => `
+      <tr>
+          <td>${new Date(battle.timestamp).toLocaleString('ja-JP', {month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'})}</td>
+          <td class="${battle.result}">${battle.result === 'win' ? '勝ち' : '負け'}</td>
+          <td>${battle.stage}</td>
+          <td>${battle.rule}</td>
+          <td>${battle.weapon}</td>
+          <td>${battle.kills}/${battle.deaths}</td>
+          <td>${battle.paint}</td>
+          <td><button class="btn-delete" onclick="deleteBattle(${battle.id})">削除</button></td>
+      </tr>
+  `).join('');
+  };
+  }
+  
+  // 武器フィルター更新
+  function updateWeaponFilter() {
+  const transaction = db.transaction(['battles'], 'readonly');
+  const objectStore = transaction.objectStore('battles');
+  const request = objectStore.getAll();
+  
+  request.onsuccess = () => {
+  const battles = request.result;
+  const weapons = [...new Set(battles.map(b => b.weapon))];
+  
+  const select = document.getElementById('weaponFilter');
+  select.innerHTML = '<option value="all">全体</option>' + 
+      weapons.map(w => `<option value="${w}">${w}</option>`).join('');
+  };
+  }
+  
+  // 統計更新
+  function updateStats() {
+  const weapon = document.getElementById('weaponFilter').value;
+  const transaction = db.transaction(['battles'], 'readonly');
+  const objectStore = transaction.objectStore('battles');
+  const request = objectStore.getAll();
+  
+  request.onsuccess = () => {
+  let battles = request.result;
+  
+  if (weapon !== 'all') {
+      battles = battles.filter(b => b.weapon === weapon);
+  }
+  
+  const totalBattles = battles.length;
+  const wins = battles.filter(b => b.result === 'win').length;
+  const losses = totalBattles - wins;
+  const winRate = totalBattles > 0 ? ((wins / totalBattles) * 100).toFixed(1) : 0;
+  const loseRate = totalBattles > 0 ? ((losses / totalBattles) * 100).toFixed(1) : 0;
+  
+  const totalKills = battles.reduce((sum, b) => sum + b.kills, 0);
+  const totalDeaths = battles.reduce((sum, b) => sum + b.deaths, 0);
+  const avgKills = totalBattles > 0 ? (totalKills / totalBattles).toFixed(2) : 0;
+  const avgDeaths = totalBattles > 0 ? (totalDeaths / totalBattles).toFixed(2) : 0;
+  const kdRatio = totalDeaths > 0 ? (totalKills / totalDeaths).toFixed(2) : totalKills;
+  
+  const totalPaint = battles.reduce((sum, b) => sum + b.paint, 0);
+  const avgPaint = totalBattles > 0 ? Math.round(totalPaint / totalBattles) : 0;
+  
+  const statsGrid = document.getElementById('statsGrid');
+  statsGrid.innerHTML = `
+      <div class="stat-card">
+          <h3>総バトル数</h3>
+          <div class="value">${totalBattles}</div>
+      </div>
+      <div class="stat-card">
+          <h3>勝率</h3>
+          <div class="value">${winRate}%</div>
+      </div>
+      <div class="stat-card">
+          <h3>敗率</h3>
+          <div class="value">${loseRate}%</div>
+      </div>
+      <div class="stat-card">
+          <h3>平均キル数</h3>
+          <div class="value">${avgKills}</div>
+      </div>
+      <div class="stat-card">
+          <h3>平均デス数</h3>
+          <div class="value">${avgDeaths}</div>
+      </div>
+      <div class="stat-card">
+          <h3>K/D比</h3>
+          <div class="value">${kdRatio}</div>
+      </div>
+      <div class="stat-card">
+          <h3>平均塗りポイント</h3>
+          <div class="value">${avgPaint}</div>
+      </div>
+      <div class="stat-card">
+          <h3>勝利 / 敗北</h3>
+          <div class="value">${wins} / ${losses}</div>
+      </div>
+  `;
+  };
+  }
+  
+  // 削除機能
+  function deleteBattle(id) {
+  if (!confirm('この記録を削除しますか？')) return;
+  
+  const transaction = db.transaction(['battles'], 'readwrite');
+  const objectStore = transaction.objectStore('battles');
+  objectStore.delete(id);
+  
+  transaction.oncomplete = () => {
+  loadHistory();
+  updateWeaponFilter();
+  updateStats();
+  };
+  }
+  
+  // 初期化
+  loadStages();
+  initDB();
+  </script>
+  </body>
+</html>
