@@ -380,7 +380,8 @@
   
       <div class="form-group">
           <label>自分の武器</label>
-          <input type="text" id="weapon" required>
+          <input type="text" id="weapon" class="weapon-input" required>
+          <div id="weaponList" class="autocomplete-list"></div>
       </div>
   
       <div class="row">
@@ -404,31 +405,38 @@
       <div class="weapon-grid">
           <div class="form-group">
               <label>味方1</label>
-              <input type="text" id="ally1">
+              <input type="text" id="ally1" class="weapon-input">
+            <div class="autocomplete-list"></div>
           </div>
           <div class="form-group">
               <label>味方2</label>
-              <input type="text" id="ally2">
+              <input type="text" id="ally2" class="weapon-input">
+            <div class="autocomplete-list"></div>
           </div>
           <div class="form-group">
               <label>味方3</label>
-              <input type="text" id="ally3">
+              <input type="text" id="ally3" class="weapon-input">
+            <div class="autocomplete-list"></div>
           </div>
           <div class="form-group">
               <label>敵1</label>
-              <input type="text" id="enemy1">
+              <input type="text" id="enemy1" class="weapon-input">
+            <div class="autocomplete-list"></div>
           </div>
           <div class="form-group">
               <label>敵2</label>
-              <input type="text" id="enemy2">
+              <input type="text" id="enemy2" class="weapon-input">
+            <div class="autocomplete-list"></div>
           </div>
           <div class="form-group">
               <label>敵3</label>
-              <input type="text" id="enemy3">
+              <input type="text" id="enemy3" class="weapon-input">
+            <div class="autocomplete-list"></div>
           </div>
           <div class="form-group">
               <label>敵4</label>
-              <input type="text" id="enemy4">
+              <input type="text" id="enemy4" class="weapon-input">
+            <div class="autocomplete-list"></div>
           </div>
       </div>
   
@@ -481,6 +489,7 @@
   <script>
   let db;
   let stages = [];
+  let weapons = [];
   
   // IndexedDB初期化
   function initDB() {
@@ -513,6 +522,7 @@
   const response = await fetch('./datas.json');
   const data = await response.json();
   stages = data.stages || [];
+  weapons = data.weapons || [];
   } catch (error) {
   console.error('ステージデータ取得エラー:', error);
   stages = ['ユノハナ大渓谷', 'ゴンズイ地区', 'ヤガラ市場', 'マテガイ放水路', 'ナメロウ金属'];
@@ -714,6 +724,52 @@
   `;
   };
   }
+
+    // 共通オートコンプリート機能
+function setupWeaponAutocomplete(inputElement) {
+  const listBox = inputElement.parentElement.querySelector('.autocomplete-list');
+
+  inputElement.addEventListener('input', () => {
+    const value = inputElement.value.trim().toLowerCase();
+
+    if (!value) {
+      listBox.classList.remove('show');
+      return;
+    }
+
+    const filtered = weapons.filter(w =>
+      w.toLowerCase().includes(value)
+    );
+
+    if (filtered.length > 0) {
+      listBox.innerHTML = filtered
+        .map(w => `<div class="autocomplete-item" onclick="selectWeapon('${w}', '${inputElement.id}')">${w}</div>`)
+        .join('');
+      listBox.classList.add('show');
+    } else {
+      listBox.classList.remove('show');
+    }
+  });
+}
+
+function selectWeapon(w, id) {
+  const input = document.getElementById(id);
+  input.value = w;
+  input.parentElement.querySelector('.autocomplete-list').classList.remove('show');
+}
+
+// 外側クリックで閉じる
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.form-group')) {
+    document.querySelectorAll('.autocomplete-list').forEach(box => {
+      box.classList.remove('show');
+    });
+  }
+});
+
+  document.querySelectorAll('.weapon-input').forEach(input => {
+  setupWeaponAutocomplete(input);
+});
   
   // 削除機能
   function deleteBattle(id) {
