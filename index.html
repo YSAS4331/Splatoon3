@@ -493,6 +493,12 @@
   let stages = [];
   let weapons = [];
   
+  let result = '勝利';
+  cSelect.setup(document.querySelector('#result'));
+  document.querySelector('#result').addEventListener('selectChanged', e => {
+    result = e.detail.value;
+  });
+  
   // IndexedDB初期化
   function initDB() {
   const request = indexedDB.open('Splatoon3DB', 1);
@@ -592,7 +598,7 @@
   
   const battle = {
   timestamp: new Date().toISOString(),
-  result: document.getElementById('result').value,
+  result: result,
   stage: document.getElementById('stage').value,
   rule: document.getElementById('rule').value,
   weapon: document.getElementById('weapon').value,
