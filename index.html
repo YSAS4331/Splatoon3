@@ -40,9 +40,9 @@
       <div class="row">
           <div class="form-group">
               <label>ステージ</label>
-              <div class="autocomplete-container">
-                  <input type="text" id="stage" required autocomplete="off">
-                  <div id="stageList" class="autocomplete-list"></div>
+              <div class="select" data-attr='"placeholder":false,"search":true,"initial":0' id="stage">
+                <div class="option">
+                </div>
               </div>
           </div>
   
@@ -175,6 +175,7 @@
   
   let result = 'win';
   let rule = 'ナワバリバトル';
+  let stage = 'ユノハナ大渓谷';
   cSelect.setup(document.querySelector('#result'));
   cSelect.setup(document.querySelector('#rule'));
   document.querySelector('#result').addEventListener('selectChanged', e => {
@@ -220,35 +221,13 @@
   console.error('ステージデータ取得エラー:', error);
   stages = ['ユノハナ大渓谷', 'ゴンズイ地区', 'ヤガラ市場', 'マテガイ放水路', 'ナメロウ金属'];
   }
-      document.querySelectorAll('.weapon-input').forEach(input => {
-  setupWeaponAutocomplete(input);
-});
-  }
-  
-  // オートコンプリート
-  const stageInput = document.getElementById('stage');
-  const stageList = document.getElementById('stageList');
-  
-  stageInput.addEventListener('input', (e) => {
-  const value = e.target.value.toLowerCase();
-  if (!value) {
-  stageList.classList.remove('show');
-  return;
-  }
-  
-  const filtered = stages.filter(stage => 
-  stage.toLowerCase().includes(value)
-  );
-  
-  if (filtered.length > 0) {
-  stageList.innerHTML = filtered.map(stage => 
-      `<div class="autocomplete-item" onclick="selectStage('${stage}')">${stage}</div>`
-  ).join('');
-  stageList.classList.add('show');
-  } else {
-  stageList.classList.remove('show');
-  }
+  const labels = stages.map(stage => `<label>${stage}</label>`).join('');
+  document.querySelector('#stage > .option').innerHTML = labels;
+  cSelect.setup(document.querySelector('#stage'));
+  document.querySelector('#stage').addEventListener('selectChanged', e => {
+    stage = e.detail.value;
   });
+  }
   
   function selectStage(stage) {
   stageInput.value = stage;
@@ -284,7 +263,7 @@
   const battle = {
   timestamp: new Date().toISOString(),
   result: result,
-  stage: document.getElementById('stage').value,
+  stage: stage,
   rule: rule,
   weapon: document.getElementById('weapon').value,
   kills: parseInt(document.getElementById('kills').value),
@@ -422,31 +401,7 @@
   }
 
     // 共通オートコンプリート機能
-function setupWeaponAutocomplete(inputElement) {
-  const listBox = inputElement.parentElement.querySelector('.autocomplete-list');
 
-  inputElement.addEventListener('input', () => {
-    const value = inputElement.value.trim().toLowerCase();
-
-    if (!value) {
-      listBox.classList.remove('show');
-      return;
-    }
-
-    const filtered = weapons.filter(w =>
-      w.toLowerCase().includes(value)
-    );
-
-    if (filtered.length > 0) {
-      listBox.innerHTML = filtered
-        .map(w => `<div class="autocomplete-item" onclick="selectWeapon('${w}', '${inputElement.id}')">${w}</div>`)
-        .join('');
-      listBox.classList.add('show');
-    } else {
-      listBox.classList.remove('show');
-    }
-  });
-}
 
 function selectWeapon(w, id) {
   const input = document.getElementById(id);
