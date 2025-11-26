@@ -301,6 +301,91 @@
   overflow-y: auto;
   padding-right: 6px;
   }
+    .select {
+  position: relative;
+  width: 260px;
+  background: var(--card);
+  color: var(--text);
+  padding: 0.6rem 1rem;
+  border-radius: 10px;
+  cursor: pointer;
+  user-select: none;
+  margin: 1rem 0;
+}
+
+.select-dis {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.select-arrow {
+  transition: transform 0.25s;
+}
+.open .select-arrow {
+  transform: rotate(180deg);
+}
+
+.option {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  width: 100%;
+  background: var(--card);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 5px 0;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+  display: none;
+  z-index: 20;
+  max-height: 200px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.open .option {
+  display: block;
+}
+
+.option label {
+  display: block;
+  padding: 0.6rem 1rem;
+  cursor: pointer;
+}
+.option label:hover {
+  background: rgba(125, 211, 252, 0.15); /* accent系に合わせて修正 */
+}
+.option label.active {
+  background: rgba(125, 211, 252, 0.35);
+}
+
+.option .select-search {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  margin: 0;
+  width: 100%;
+  background: var(--card);
+  color: var(--text);
+  padding: 0.6rem 1rem;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  outline: none;
+  user-select: none;
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+.option .select-search:not(.NoBorder):focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(125, 211, 252, 0.25);
+}
+.option .select-search::placeholder {
+  color: var(--muted-2);
+  opacity: 0.7;
+}
+.option .select-search:disabled {
+  background: var(--chip-bg);
+  color: var(--muted);
+  cursor: not-allowed;
+}
   
   @media (max-width: 768px) {
   body {
