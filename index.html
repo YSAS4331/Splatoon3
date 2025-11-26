@@ -88,9 +88,10 @@
       <h3>全プレイヤーの武器</h3>
       <div class="weapon-grid">
           <div class="form-group">
-              <label>味方1</label>
-              <input type="text" id="ally1" class="weapon-input">
-            <div class="autocomplete-list"></div>
+              <div class="select weapon" data-attr='"placeholder":false,"initial":0,"search":true' id="weapon">
+            <div class="option">
+            </div>
+          </div>
           </div>
           <div class="form-group">
               <label>味方2</label>
@@ -179,6 +180,7 @@
   let rule = 'ナワバリバトル';
   let stage = 'ユノハナ大渓谷';
   let weapon = 'スプラシューター';
+  let allWeapons = {};
   cSelect.setup(document.querySelector('#result'));
   cSelect.setup(document.querySelector('#rule'));
   document.querySelector('#result').addEventListener('selectChanged', e => {
@@ -289,15 +291,7 @@
   kills: parseInt(document.getElementById('kills').value),
   deaths: parseInt(document.getElementById('deaths').value),
   paint: parseInt(document.getElementById('paint').value),
-  allWeapons: {
-      ally1: document.getElementById('ally1').value,
-      ally2: document.getElementById('ally2').value,
-      ally3: document.getElementById('ally3').value,
-      enemy1: document.getElementById('enemy1').value,
-      enemy2: document.getElementById('enemy2').value,
-      enemy3: document.getElementById('enemy3').value,
-      enemy4: document.getElementById('enemy4').value
-  }
+  allWeapons: allWeapons
   };
   
   const transaction = db.transaction(['battles'], 'readwrite');
