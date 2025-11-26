@@ -62,8 +62,10 @@
   
       <div class="form-group">
           <label>自分の武器</label>
-          <input type="text" id="weapon" class="weapon-input" required>
-          <div id="weaponList" class="autocomplete-list"></div>
+          <div class="select" data-attr='"placeholder":false,"initial":0,"search":true' id="weapon">
+            <div class="option">
+            </div>
+          </div>
       </div>
   
       <div class="row">
@@ -176,6 +178,7 @@
   let result = 'win';
   let rule = 'ナワバリバトル';
   let stage = 'ユノハナ大渓谷';
+  let weapon = 'スプラシューター';
   cSelect.setup(document.querySelector('#result'));
   cSelect.setup(document.querySelector('#rule'));
   document.querySelector('#result').addEventListener('selectChanged', e => {
@@ -221,11 +224,17 @@
   console.error('ステージデータ取得エラー:', error);
   stages = ['ユノハナ大渓谷', 'ゴンズイ地区', 'ヤガラ市場', 'マテガイ放水路', 'ナメロウ金属'];
   }
-  const labels = stages.map(stage => `<label>${stage}</label>`).join('');
-  document.querySelector('#stage > .option').innerHTML = labels;
+  const stagelabels = stages.map(stage => `<label>${stage}</label>`).join('');
+  document.querySelector('#stage > .option').innerHTML = stagelabels;
   cSelect.setup(document.querySelector('#stage'));
   document.querySelector('#stage').addEventListener('selectChanged', e => {
     stage = e.detail.value;
+  });
+  const weaponlabels = weapons.map(wp => `<label>${wp}</label>`).join('');
+  document.querySelector('#weapon > .option').innerHTML = weaponlabels;
+  cSelect.setup(document.querySelector('#weapon'));
+  document.querySelector('#weapon').addEventListener('selectChanged', e => {
+    weapon = e.detail.value;
   });
   }
   
@@ -265,7 +274,7 @@
   result: result,
   stage: stage,
   rule: rule,
-  weapon: document.getElementById('weapon').value,
+  weapon: weapon,
   kills: parseInt(document.getElementById('kills').value),
   deaths: parseInt(document.getElementById('deaths').value),
   paint: parseInt(document.getElementById('paint').value),
