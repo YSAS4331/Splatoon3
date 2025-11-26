@@ -581,7 +581,7 @@
   let result = '勝利';
   cSelect.setup(document.querySelector('#result'));
   document.querySelector('#result').addEventListener('selectChanged', e => {
-    result = e.detail.value;
+    result = e.detail.value==='勝利'?'win':'lose';
   });
   
   // IndexedDB初期化
