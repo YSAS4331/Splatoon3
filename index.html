@@ -248,7 +248,7 @@
   const weaponlabels = weapons.map(wp => `<label>${wp}</label>`).join('');
   document.querySelectorAll('.weapon').forEach(weapon => {
     weapon.querySelector('.option').innerHTML = weaponlabels;
-    const searchInput = window.cSelect.setup(weapon);
+    const searchInput = cSelect.setup(weapon);
     if (searchInput) {
       searchInput.addEventListener('input', () => {
         let str = searchInput.value;
