@@ -62,7 +62,7 @@
   
       <div class="form-group">
           <label>自分の武器</label>
-          <div class="select" data-attr='"placeholder":false,"initial":0,"search":true' id="weapon">
+          <div class="select" data-attr='"placeholder":false,"initial":0,"search":true' id="weapon" class="weapons">
             <div class="option">
             </div>
           </div>
@@ -231,8 +231,10 @@
     stage = e.detail.value;
   });
   const weaponlabels = weapons.map(wp => `<label>${wp}</label>`).join('');
-  document.querySelector('#weapon > .option').innerHTML = weaponlabels;
-  cSelect.setup(document.querySelector('#weapon'));
+  document.querySelectorAll('.weapon').forEach(weapon => {
+    weapon.querySelector('.option').innerHTML = weaponlabels;
+    cSelect.setup(weapon);
+  });
   document.querySelector('#weapon').addEventListener('selectChanged', e => {
     weapon = e.detail.value;
   });
