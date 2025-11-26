@@ -234,7 +234,7 @@
   document.querySelectorAll('.weapon').forEach(weapon => {
     weapon.querySelector('.option').innerHTML = weaponlabels;
     const searchInput = window.cSelect.setup(weapon);
-    /*if (searchInput) {
+    if (searchInput) {
       searchInput.addEventListener('input', () => {
         let str = searchInput.value;
         str = str.replace(/[\u3041-\u3096]/g, function(match) {
@@ -242,7 +242,7 @@
         });
         searchInput.value = str;
       });
-    }*/
+    }
   });
   document.querySelector('#weapon').addEventListener('selectChanged', e => {
     weapon = e.detail.value;
