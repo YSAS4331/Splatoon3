@@ -233,8 +233,8 @@
   const weaponlabels = weapons.map(wp => `<label>${wp}</label>`).join('');
   document.querySelectorAll('.weapon').forEach(weapon => {
     weapon.querySelector('.option').innerHTML = weaponlabels;
-    cSelect.setup(weapon);
-    if (searchInput) {
+    const searchInput = cSelect.setup(weapon);
+    /*if (searchInput) {
       searchInput.addEventListener('input', () => {
         let str = searchInput.value;
         str = str.replace(/[\u3041-\u3096]/g, function(match) {
@@ -242,7 +242,7 @@
         });
         searchInput.value = str;
       });
-    }
+    }*/
   });
   document.querySelector('#weapon').addEventListener('selectChanged', e => {
     weapon = e.detail.value;
