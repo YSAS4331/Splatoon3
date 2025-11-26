@@ -454,14 +454,15 @@
   
           <div class="form-group">
               <label>ルール</label>
-              <select id="rule" required>
-                  <option value="">選択してください</option>
-                  <option value="ナワバリバトル">ナワバリバトル</option>
-                  <option value="ガチエリア">ガチエリア</option>
-                  <option value="ガチヤグラ">ガチヤグラ</option>
-                  <option value="ガチホコバトル">ガチホコバトル</option>
-                  <option value="ガチアサリ">ガチアサリ</option>
-              </select>
+              <div class="select" data-attr='"placeholder":false,"initial":0' id="role">
+                <div class="option">
+                  <label>ナワバリバトル</label>
+                  <label>ガチエリア</label>
+                  <label>ガチヤグラ</label>
+                  <label>ガチホコバトル</label>
+                  <label>ガチアサリ</label>
+                </div>
+              </div>
           </div>
       </div>
   
@@ -579,9 +580,14 @@
   let weapons = [];
   
   let result = '勝利';
+  let rule = 'ナワバリバトル';
   cSelect.setup(document.querySelector('#result'));
+  cSelect.setup(document.querySelector('#rule'));
   document.querySelector('#result').addEventListener('selectChanged', e => {
     result = e.detail.value==='勝利'?'win':'lose';
+  });
+  document.querySelector('#rule').addEventListener('selectChanged', e => {
+    rule = e.detail.value;
   });
   
   // IndexedDB初期化
@@ -685,7 +691,7 @@
   timestamp: new Date().toISOString(),
   result: result,
   stage: document.getElementById('stage').value,
-  rule: document.getElementById('rule').value,
+  rule: rule,
   weapon: document.getElementById('weapon').value,
   kills: parseInt(document.getElementById('kills').value),
   deaths: parseInt(document.getElementById('deaths').value),
