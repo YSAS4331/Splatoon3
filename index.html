@@ -237,8 +237,8 @@
     if (searchInput) {
       searchInput.addEventListener('input', () => {
         let str = searchInput.value;
-        str = str.replace(/[\u3041-\u3096]/g, function(match) {
-          return String.fromCharCode(match.charCodeAt(0) + 0x60);
+        str = str.replace(/[ぁ-ん]/g, function(s) {
+          return String.fromCharCode(s.charCodeAt(0) + 0x60);
         });
         searchInput.value = str;
       });
