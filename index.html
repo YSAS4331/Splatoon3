@@ -258,6 +258,11 @@
         searchInput.value = str;
       });
     }
+    if (weapon.id !== 'weapon') {
+      weapon.addEventListener('selectChanged', e => {
+        allWeapons[weapon.id] = e.detail.value;
+      });
+    }
   });
   document.querySelector('#weapon').addEventListener('selectChanged', e => {
     weapon = e.detail.value;
