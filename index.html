@@ -234,6 +234,13 @@
   document.querySelectorAll('.weapon').forEach(weapon => {
     weapon.querySelector('.option').innerHTML = weaponlabels;
     cSelect.setup(weapon);
+    weapon.querySelector('.select-search').addEventListener('input', () => {
+      let str = weapon.querySelector('.select-search').value;
+      str = str.replace(/[\u3041-\u3096]/g, function(match) {
+        return String.fromCharCode(match.charCodeAt(0) + 0x60);
+      });
+      weapon.querySelector('.select-search').value = str;
+    });
   });
   document.querySelector('#weapon').addEventListener('selectChanged', e => {
     weapon = e.detail.value;
