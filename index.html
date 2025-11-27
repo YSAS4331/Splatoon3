@@ -248,16 +248,7 @@
   const weaponlabels = weapons.map(wp => `<label>${wp}</label>`).join('');
   document.querySelectorAll('.weapon').forEach(weapon => {
     weapon.querySelector('.option').innerHTML = weaponlabels;
-    const searchInput = cSelect.setup(weapon);
-    if (searchInput) {
-      searchInput.addEventListener('input', () => {
-        let str = searchInput.value;
-        str = str.replace(/[ぁ-ん]/g, function(s) {
-          return String.fromCharCode(s.charCodeAt(0) + 0x60);
-        });
-        searchInput.value = str;
-      });
-    }
+    cSelect.setup(weapon);
     if (weapon.id !== 'weapon') {
       weapon.addEventListener('selectChanged', e => {
         allWeapons[weapon.id] = e.detail.value;
